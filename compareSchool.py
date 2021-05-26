@@ -1,6 +1,3 @@
-#export PATH="$PATH:/usr/local/chromewebdriver"
-#https://intercoolerjs.org/examples/infinitescroll.html #infinite scroll website
-
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -19,9 +16,6 @@ GET_ELEMENT = "document.getElementsByClassName('school-list-table-card school-li
 SEARCHBAR_XPATH = '//input[@id="keyword"]'
 AUTOCOMPLETE_XPATH = '//div[@class="v-menu__content theme--light menuable__content__active v-autocomplete__content"]//div[@role="listitem"]'
 TABLEBODY_XPATH = '//div[@id="school-map-view"]//table[@class="v-datatable v-table theme--light"]/tbody'
-
-DRIVER_PATH = '/usr/lib/chromium-browser/chromedriver'
-CITY = 'Burnaby'
 
 #generalization definitions
 class School:
@@ -64,8 +58,8 @@ def print_schools(schools_list):
 	for school in schools_list:
 		school.print()
 
-def get_schools():
-	driver = webdriver.Chrome(DRIVER_PATH)  # Optional argument, if not specified will search path.
+def get_schools(city, driver_path):
+	driver = webdriver.Chrome(driver_path)  # Optional argument, if not specified will search path.
 	driver.implicitly_wait(5)
 	driver.maximize_window()
 	try:
@@ -74,7 +68,7 @@ def get_schools():
 		searchBar = WebDriverWait(driver,5).until(EC.element_to_be_clickable((By.XPATH, SEARCHBAR_XPATH)))
 		#print("searchBar found")
 		time.sleep(1) #javascript doesn't seem to load fast enough most of the time and autoComplete bar is never created
-		searchBar.send_keys(CITY)
+		searchBar.send_keys(city)
 		#must select autofill option, otherwise no filter is chosen
 		autoComplete = WebDriverWait(driver,5).until(EC.element_to_be_clickable((By.XPATH, AUTOCOMPLETE_XPATH)))
 		autoComplete.click()
@@ -92,13 +86,6 @@ def get_schools():
 		print('error scraping:', WEBSITE, e)
 	finally:
 		driver.quit()
-
-#TESTING
-def main():
-	get_schools()
-
-if __name__ == "__main__":
-	main()
 
 ###########################################
 #depreciated school information extraction#
