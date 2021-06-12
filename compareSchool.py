@@ -24,8 +24,8 @@ class School:
 		self.name = name
 		self.score = score
 		self.rank = rank
-	def print(self):
-		print(self.name, self.score, self.rank)
+	def __str__(self):
+		return (" ".join([self.name,self.score,self.rank]))
 
 def scroll_down_element(driver, element, getElement):
 	#getElement is the javascript HTML get command to return an element. if the script returns a list, be sure to include the index
@@ -53,10 +53,6 @@ def compile_schools(tbl_entries):
 		school = School(name,score,rank)
 		schools.append(school)
 	return schools
-	
-def print_schools(schools_list):
-	for school in schools_list:
-		school.print()
 
 def get_schools(city, driver_path):
 	driver = webdriver.Chrome(driver_path)  # Optional argument, if not specified will search path.
@@ -69,7 +65,7 @@ def get_schools(city, driver_path):
 		#print("searchBar found")
 		time.sleep(1) #javascript doesn't seem to load fast enough most of the time and autoComplete bar is never created
 		searchBar.send_keys(city)
-		#must select autofill option, otherwise no filter is chosen
+		#must select autofill option, otherwise filter may include schools outside of target
 		autoComplete = WebDriverWait(driver,5).until(EC.element_to_be_clickable((By.XPATH, AUTOCOMPLETE_XPATH)))
 		autoComplete.click()
 		#print("autoComplete found")
@@ -81,7 +77,7 @@ def get_schools(city, driver_path):
 		soup = BeautifulSoup(page_source, "html.parser")
 		tbl_entries = soup.find("tbody").find_all("tr")
 		schools = compile_schools(tbl_entries)
-		print_schools(schools)
+		print(*schools, sep="\n")
 	except Exception as e:
 		print('error scraping:', WEBSITE, e)
 	finally:
