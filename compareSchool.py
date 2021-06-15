@@ -1,4 +1,5 @@
 import time
+from datetime import date as date
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -20,12 +21,14 @@ TABLEBODY_XPATH = '//div[@id="school-map-view"]//table[@class="v-datatable v-tab
 #generalization definitions
 class School:
 	#pass -1 for score and "n/a" for rank when not applicable 
-	def __init__(self, name, score, rank):
+	def __init__(self, city, name, score, rank, retrieved):
+		self.city = city
 		self.name = name
 		self.score = score
 		self.rank = rank
+		self.retrieved = retrieved
 	def __str__(self):
-		return (" ".join([self.name,self.score,self.rank]))
+		return (" ".join([self.city,self.name,self.score,self.rank,self.retrieved]))
 
 def scroll_down_element(driver, element, getElement):
 	#getElement is the javascript HTML get command to return an element. if the script returns a list, be sure to include the index
@@ -44,13 +47,15 @@ def scroll_down_element(driver, element, getElement):
         print('ERROR func scroll_down_element: ', e)
 
 #site specific definitions
-def compile_schools(tbl_entries):
+def compile_schools(city,tbl_entries):
 	schools = []
 	for entry in tbl_entries:
+		city = city
 		name = entry.find(class_=NAME_CLASS).get_text(strip=True)
 		score = entry.find(class_=lambda css_class : SCORE_CLASS in css_class).get_text(strip=True)
 		rank = entry.find(class_=RANK_CLASS).get_text(strip=True)
-		school = School(name,score,rank)
+		retrieved = str(date.today())
+		school = School(city,name,score,rank,retrieved)
 		schools.append(school)
 	return schools
 
@@ -58,6 +63,7 @@ def get_schools(city, driver_path):
 	driver = webdriver.Chrome(driver_path)  # Optional argument, if not specified will search path.
 	driver.implicitly_wait(5)
 	driver.maximize_window()
+	schools = []
 	try:
 		driver.get(WEBSITE)
 		#filter schools by city name
@@ -76,12 +82,13 @@ def get_schools(city, driver_path):
 		page_source = driver.page_source
 		soup = BeautifulSoup(page_source, "html.parser")
 		tbl_entries = soup.find("tbody").find_all("tr")
-		schools = compile_schools(tbl_entries)
-		print(*schools, sep="\n")
+		schools = compile_schools(city,tbl_entries)
+		#print(*schools, sep="\n")
 	except Exception as e:
 		print('error scraping:', WEBSITE, e)
 	finally:
 		driver.quit()
+		return schools
 
 ###########################################
 #depreciated school information extraction#

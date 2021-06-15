@@ -1,5 +1,4 @@
 import pymongo
-import mysql.connector
 
 import compareSchool as cs
 import db_msql as msql
@@ -8,13 +7,8 @@ DRIVER_PATH = "/usr/lib/chromium-browser/chromedriver"
 CITY = "Burnaby"
 DATABASE_NAME = "myNeighbourhood"
 DATABASE_PORT = "27017"
-MSQL_LOGIN = {
-	"host": "localhost",
-	"user": "root",
-	"password": "",
-}
 
-#TODO: mongoDB functions
+#TODO: mongoDB functions, used for Realtor features
 def pymongo_database():
 	client = pymongo.MongoClient("mongodb://localhost:"+DATABASE_PORT+"/")
 	db = client[DATABASE_NAME]
@@ -32,27 +26,46 @@ def pymongo_database():
 
 	client.close()
 
+#TODO: will likely need scrape dispatch for each website to scrape
+def scrape_cmd(city):
+	table = "schools"
+	pkeys = ["city","name"]
+	schools = cs.get_schools(city,DRIVER_PATH)
+	msql.insert(table,pkeys,schools)
+
+def msql_dispatch(*args):
+	cases = {
+		"ini": msql.ini,
+		"reset": msql.reset
+	}
+	if cases.get(args[0]) == None:
+		print("unknown command")
+	else:
+		cases[args[0]](*args[1:])
+
 ###Commands###
 #scrape _1_ _2_:
 #   _1_: website
 #   _2_: specifics (city)
+#   _3_: driver path
 #db _1_ _2_:
 #   _1_: database type
 #   _2_: command (ini for db initialization)
 
 #TODO: if possible, convert to command dispatch pattern
 #https://stackoverflow.com/questions/5431732/patterns-event-dispatcher-without-else-if
-def process_cmd(cmd,args):
+def cmd_dispatch(cmd,args):
 	live = 1
 	cases = {
-		"scrape": print("call cs.get_schools()"), #cs.get_schools(CITY, DRIVER_PATH),
-		"db": print("call database()"), #database()
+		"scrape": scrape_cmd,
+		"db_msql": msql_dispatch
 	}
 	if cmd == "quit":
 		live = 0
+	elif cases.get(cmd) == None:
+		print("unknown command")
 	else:
-		if cases.get(cmd) == None:
-			print("unknown command")
+		cases[cmd](*args)
 	return live
 
 if __name__ == "__main__":
@@ -60,4 +73,4 @@ if __name__ == "__main__":
 	while live:
 		cmd = input()
 		cmd_split = cmd.split(sep=" ")
-		live = process_cmd(cmd_split[0], cmd_split[1:])
+		live = cmd_dispatch(cmd_split[0], cmd_split[1:])
