@@ -1,7 +1,7 @@
 import pymongo
 
-import compareSchool as cs
-import db_msql as msql
+import modules.webscraper.compareSchool as cs
+import modules.db.msql as msql
 
 DRIVER_PATH = "/usr/lib/chromium-browser/chromedriver"
 CITY = "Burnaby"
@@ -52,25 +52,20 @@ def msql_dispatch(*args):
 #   _1_: database type
 #   _2_: command (ini for db initialization)
 
-#TODO: if possible, convert to command dispatch pattern
-#https://stackoverflow.com/questions/5431732/patterns-event-dispatcher-without-else-if
 def cmd_dispatch(cmd,args):
 	live = 1
 	cases = {
 		"scrape": scrape_cmd,
 		"db_msql": msql_dispatch
 	}
-	if cmd == "quit":
-		live = 0
-	elif cases.get(cmd) == None:
-		print("unknown command")
-	else:
-		cases[cmd](*args)
-	return live
-
-if __name__ == "__main__":
-	live = 1
-	while live:
-		cmd = input()
-		cmd_split = cmd.split(sep=" ")
-		live = cmd_dispatch(cmd_split[0], cmd_split[1:])
+	try:
+		if cmd == "quit":
+			live = 0
+		elif cases.get(cmd) == None:
+			print("unknown command")
+		else:
+			cases[cmd](*args)
+	except Exception as e:
+		print('error cmd_dispatch:', e)
+	finally:
+		return live
