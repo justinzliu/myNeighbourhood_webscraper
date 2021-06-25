@@ -29,4 +29,4 @@ def scroll_down_element(driver, element, getElement):
             new_offset = driver.execute_script("return " + getElement + ".scrollHeight")
             #print(offset, new_offset)
     except Exception as e:
-        print('ERROR func scroll_down_element: ', e)
+        print('ERROR scroll_down_element(): ', e)
