@@ -1,5 +1,6 @@
 import time
 from datetime import date as date
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -9,9 +10,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 import modules.webscraper.scraper_utils as scrape
 
-###########################
-###site specific GLOBALS###
-###########################
+#############################
+### Site Specific GLOBALS ###
+#############################
 
 WEBSITE = 'https://www.compareschoolrankings.org/'
 #locate searchbar, input city, click autocomplete option
@@ -25,7 +26,10 @@ NAME_CLASS = "school-name label"
 RANK_CLASS = "flex text-xs-right field xs6"
 SCORE_CLASS = "flex xs6 text-xs-right field score_color_"
 
-#site specific definitions
+###############################
+### Site Specific Functions ###
+###############################
+
 def compile_schools(city,tbl_entries):
     schools = []
     for entry in tbl_entries:
@@ -38,7 +42,7 @@ def compile_schools(city,tbl_entries):
         schools.append(school)
     return schools
 
-def get_schools(city, driver_path):
+def get_schools(driver_path, city):
 	driver = webdriver.Chrome(driver_path)  # Optional argument, if not specified will search path.
 	driver.implicitly_wait(5)
 	driver.maximize_window()
@@ -65,9 +69,11 @@ def get_schools(city, driver_path):
 		driver.quit()
 		return schools
 
-###########################################
-#depreciated school information extraction#
-###########################################
+###########################
+### Depreciated Methods ###
+###########################
+#kept for future reference
+
 def get_innerHTML(tbl_entries):
 	innerHTMLs = []
 	for entry in tbl_entries:

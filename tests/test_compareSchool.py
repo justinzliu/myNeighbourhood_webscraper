@@ -18,7 +18,7 @@ CITY = "Burnaby"
 class Test_compareSchool(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
-		cls.schools = cs.get_schools(CITY,DRIVER_PATH)
+		cls.schools = cs.get_schools(DRIVER_PATH,CITY)
 	def test_validSchools(self):
 		cols = self.schools[0].__dict__.keys()
 		errors = 0

@@ -1,0 +1,18 @@
+﻿"REF_DATE","GEO","DGUID","Violations","Statistics","UOM","UOM_ID","SCALAR_FACTOR","SCALAR_ID","VECTOR","COORDINATE","VALUE","STATUS","SYMBOL","TERMINATED","DECIMALS"
+"2019","Canada","2016A000011124","Total, all violations [0]","Actual incidents","Number","223","units","0","v44348247","1.1.1","2438518","","","","0"
+"2019","Canada","2016A000011124","Total, all violations [0]","Rate per 100,000 population","Rate","257","units","0","v44396346","1.1.2","6487.27","","","","2"
+"2019","Canada","2016A000011124","Total, all violations [0]","Percentage change in rate","Percent","239","units","0","v44391402","1.1.3","5.43","","","","2"
+"2019","Canada","2016A000011124","Total violent Criminal Code violations [100]","Actual incidents","Number","223","units","0","v44372528","1.4.1","480004","","","","0"
+"2019","Canada","2016A000011124","Total violent Criminal Code violations [100]","Rate per 100,000 population","Rate","257","units","0","v44392548","1.4.2","1276.97","","","","2"
+"2019","Canada","2016A000011124","Total violent Criminal Code violations [100]","Percentage change in rate","Percent","239","units","0","v44332104","1.4.3","10.87","","","","2"
+"2019","Canada","2016A000011124","Total property crime violations [200]","Actual incidents","Number","223","units","0","v44369512","1.64.1","1319562","","","","0"
+"2019","Canada","2016A000011124","Total property crime violations [200]","Rate per 100,000 population","Rate","257","units","0","v44338294","1.64.2","3510.48","","","","2"
+"2019","Canada","2016A000011124","Total property crime violations [200]","Percentage change in rate","Percent","239","units","0","v44404526","1.64.3","4.82","","","","2"
+"2019","Canada","2016A000011124","Total Criminal Code traffic violations [900]","Actual incidents","Number","223","units","0","v44415577","1.148.1","136706","","","","0"
+"2019","Canada","2016A000011124","Total Criminal Code traffic violations [900]","Rate per 100,000 population","Rate","257","units","0","v44337885","1.148.2","363.68","","","","2"
+"2019","Canada","2016A000011124","Total Criminal Code traffic violations [900]","Percentage change in rate","Percent","239","units","0","v44365963","1.148.3","7.06","","","","2"
+"2019","Canada","2016A000011124","Total drug violations [401]","Actual incidents","Number","223","units","0","v72496402","1.231.1","70140","","","","0"
+"2019","Canada","2016A000011124","Total drug violations [401]","Rate per 100,000 population","Rate","257","units","0","v72496403","1.231.2","186.60","","","","2"
+"2019","Canada","2016A000011124","Total drug violations [401]","Percentage change in rate","Percent","239","units","0","v72496404","1.231.3","-18.58","","","","2"
+
+

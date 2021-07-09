@@ -1,4 +1,4 @@
-#from dir python3 -m unittest tests.test_rcmp
+#python3 -m unittest tests.test_rcmp
 
 import unittest
 
@@ -20,7 +20,8 @@ class Test_compareSchool(unittest.TestCase):
 	#def setUpClass(cls):
 	#	cls.schools = cs.get_schools(CITY,DRIVER_PATH)
 	def test_validCrimes(self):
-		rcmp.get_crimeStats(DRIVER_PATH)
+		#rcmp.get_crimeStats(DRIVER_PATH)
+		rcmp.get_report("1","2")
 		self.assertTrue(1 > 0)
 
 if __name__ == '__main__':

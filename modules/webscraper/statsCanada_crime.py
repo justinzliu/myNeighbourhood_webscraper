@@ -1,9 +1,9 @@
 import time
 import csv
 from datetime import date as date
+import re
 
 import requests as req
-import re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -14,77 +14,59 @@ from selenium.webdriver.common.action_chains import ActionChains
 import modules.webscraper.scraper_utils as scrape
 
 #############################
-### site specific GLOBALS ###
+### Site Specific GLOBALS ###
 #############################
 
-PATH = "resources/crime_statistics/"
-FILE = "statscan_crime_canada.csv"
-
-#TODO: Move City/website pair to text document in JSON format
-BURNABY_REPORT = "https://burnaby.rcmp-grc.gc.ca/ViewPage.action?siteNodeId=863&languageId=1&contentId=68914"
-TABLE_ELEMENT = "table"
-	
+#FILE headers of target data	
+DATE = "REF_DATE"
+LOCATION = "GEO"
 TYPE = "Violations"
 METRIC = "Statistics"
 VALUE = "VALUE"
+#FILE subheaders of target data
+INCIDENTS_KEYWORD = "incidents"
+RATE_KEYWORD = "Rate"
+CHANGE_KEYWORD = "Percentage"
+#target crime categories
+CRIME_CATEGORIES = ["all", "violent", "property", "traffic", "drug"]
 
-CRIME_CATEGORIES = ["all", "violent", "property", "traffic", "drug", "other"]
-STATS_HEADERS = ["incidents", "Rate", "Percentage"]
+###############################
+### Site Specific Functions ###
+###############################
 
-class crimeReport:
-    def __init__(self, violations, incidents, rate, change, retrieved):
-    	self.violations = violations
-    	self.incidents = incidents
-    	self.rate = rate
-    	self.change = change
-    	self.retrieved = retrieved
-    def __repr__(self):
-        cols = self.__dict__.keys()
-        return (" ".join((col + ": " + getattr(self, col)) for col in cols))
-
-def extract_table(table):
-	table_rows = table.find_all("tr")
-	ex_table = []
-	lens = []
-	for table_row in table_rows:
-		row_entries = table_row.find_all(["th", "td"])
-		lens.append(len(row_entries))
-		ex_table.append([entry.get_text() for entry in row_entries])
-	print(ex_table)
-	return ex_table
-
-def get_key(target, dictionary):
-	for key in dictionary.keys():
-		pattern = re.compile(target)
-		if pattern.search(key):
-			return key
-	return None
-
-def compile_crimes(categories, stats_headers, reports):
+def compile_crimes(categories, reports):
 	crimes = []
 	for category in categories:
-		report_key = get_key(category, reports)
-		stats = []
-		for stat in stats_headers:
-			stat_key = get_key(stat, reports[report_key])
-			stats.append(reports[report_key][stat_key])
-		crime = crimeReport(category,stats[0],stats[1],stats[2],str(date.today()))
+		report_key = scrape.get_key(category,reports)
+		location = reports["location"]
+		incidents = reports[report_key][scrape.get_key(INCIDENTS_KEYWORD,reports[report_key])]
+		rate = reports[report_key][scrape.get_key(RATE_KEYWORD,reports[report_key])]
+		change = reports[report_key][scrape.get_key(CHANGE_KEYWORD,reports[report_key])]
+		year = reports["year"]
+		retrieved = str(date.today())
+		crime = scrape.CrimeReport(location,category,incidents,rate,change,year,retrieved)
 		crimes.append(crime)
 	return crimes
 
-#site specific definitions
-def get_report(website, table_element):
-	with open(PATH + FILE, "r", newline='', encoding='utf-8') as file:
-		reports = {}
+def get_reports(file, location):
+	with open(file, "r", newline='', encoding='utf-8') as file:
+		reports = {"location": location}
 		reader = csv.DictReader(file, delimiter=',')
 		for row in reader:
-			if row[TYPE] in reports:
-				reports[row[TYPE]].update({row[METRIC]:row[VALUE]})
-			else:
-				reports[row[TYPE]] = {row[METRIC]:row[VALUE]}
-	compiled_reports = compile_crimes(CRIME_CATEGORIES, STATS_HEADERS, reports)
-	print(*compiled_reports, sep="\n")
+			pattern = re.compile(location,re.IGNORECASE)
+			if pattern.search(row[LOCATION]):
+				if row[TYPE] in reports:
+					reports[row[TYPE]].update({row[METRIC]:row[VALUE]})
+				else:
+					reports[row[TYPE]] = {row[METRIC]:row[VALUE]}
+	reports["year"] = row[scrape.get_key(DATE,row)]
+	compiled_reports = compile_crimes(CRIME_CATEGORIES, reports)
 	return compiled_reports
+
+###########################
+### Depreciated Methods ###
+###########################
+#kept for future reference
 
 #DEPRECIATED: attempted to generalize report finding for rcmp website, website is not uniform enough to for a generalized tool
 def get_next_link(start_website, target_element, target_stringIdentifer):
