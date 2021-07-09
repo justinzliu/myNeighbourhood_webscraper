@@ -1,5 +1,6 @@
 import time
 from datetime import date as date
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -9,18 +10,26 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 import modules.webscraper.scraper_utils as scrape
 
-#site specific GLOBALS
-WEBSITE = 'https://www.compareschoolrankings.org/'
-NAME_CLASS = "school-name label"
-RANK_CLASS = "flex text-xs-right field xs6"
-SCORE_CLASS = "flex xs6 text-xs-right field score_color_"
-GET_ELEMENT = "document.getElementsByClassName('school-list-table-card school-list-table-sidebar')[0]"
+#############################
+### Site Specific GLOBALS ###
+#############################
 
+WEBSITE = 'https://www.compareschoolrankings.org/'
+#locate searchbar, input city, click autocomplete option
 SEARCHBAR_XPATH = '//input[@id="keyword"]'
 AUTOCOMPLETE_XPATH = '//div[@class="v-menu__content theme--light menuable__content__active v-autocomplete__content"]//div[@role="listitem"]'
 TABLEBODY_XPATH = '//div[@id="school-map-view"]//table[@class="v-datatable v-table theme--light"]/tbody'
+#container for school results, scroll function used to load all results
+GET_ELEMENT = "document.getElementsByClassName('school-list-table-card school-list-table-sidebar')[0]"
+#locate name, rank, and score fields
+NAME_CLASS = "school-name label"
+RANK_CLASS = "flex text-xs-right field xs6"
+SCORE_CLASS = "flex xs6 text-xs-right field score_color_"
 
-#site specific definitions
+###############################
+### Site Specific Functions ###
+###############################
+
 def compile_schools(city,tbl_entries):
     schools = []
     for entry in tbl_entries:
@@ -33,7 +42,7 @@ def compile_schools(city,tbl_entries):
         schools.append(school)
     return schools
 
-def get_schools(city, driver_path):
+def get_schools(driver_path, city):
 	driver = webdriver.Chrome(driver_path)  # Optional argument, if not specified will search path.
 	driver.implicitly_wait(5)
 	driver.maximize_window()
@@ -42,16 +51,12 @@ def get_schools(city, driver_path):
 		driver.get(WEBSITE)
 		#filter schools by city name
 		searchBar = WebDriverWait(driver,5).until(EC.element_to_be_clickable((By.XPATH, SEARCHBAR_XPATH)))
-		#print("searchBar found")
-		time.sleep(1) #javascript doesn't seem to load fast enough most of the time and autoComplete bar is never created
+		time.sleep(1) #JS that creates autofill options don't seem to load fast enough majority of the time and autoComplete options are never created
 		searchBar.send_keys(city)
 		#must select autofill option, otherwise filter may include schools outside of target
 		autoComplete = WebDriverWait(driver,5).until(EC.element_to_be_clickable((By.XPATH, AUTOCOMPLETE_XPATH)))
 		autoComplete.click()
-		#print("autoComplete found")
 		tableBody = WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH, TABLEBODY_XPATH)))
-		#print("tableBody found")
-
 		scrape.scroll_down_element(driver, tableBody, GET_ELEMENT)
 		page_source = driver.page_source
 		soup = BeautifulSoup(page_source, "html.parser")
@@ -64,9 +69,11 @@ def get_schools(city, driver_path):
 		driver.quit()
 		return schools
 
-###########################################
-#depreciated school information extraction#
-###########################################
+###########################
+### Depreciated Methods ###
+###########################
+#kept for future reference
+
 def get_innerHTML(tbl_entries):
 	innerHTMLs = []
 	for entry in tbl_entries:

@@ -12,6 +12,17 @@ TABLES["schools"] = (
     "  `retrieved` DATE,"
     "  PRIMARY KEY (`city`, `name`)"
     ")")
+TABLES["crimes"] = (
+    "CREATE TABLE crimes ("
+    "  `location` VARCHAR(255) NOT NULL,"
+    "  `violations` VARCHAR(255) NOT NULL,"
+    "  `incidents` VARCHAR(255),"
+    "  `rate` VARCHAR(255),"
+    "  `change` VARCHAR(255),"
+    "  `year` VARCHAR(255),"
+    "  `retrieved` DATE,"
+    "  PRIMARY KEY (`location`, `violations`)"
+    ")")
 
 ###############
 ### Utility ###
@@ -24,7 +35,7 @@ def enclose(elem, elem_brackets="  ", enclosure="  "):
 	return enclosed
 
 ######################
-### mySQL commands ###
+### mySQL Commands ###
 ######################
 
 def ini(host="localhost", user="root", password=""):
@@ -38,6 +49,7 @@ def ini(host="localhost", user="root", password=""):
 	try:
 		cursor.execute("use " + DATABASE_NAME)
 		cursor.execute(TABLES["schools"])
+		cursor.execute(TABLES["crimes"])
 	except mysql.connector.Error as err:
 		print("ERROR db_msql.ini(): " + format(err))
 	finally:
