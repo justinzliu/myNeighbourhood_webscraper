@@ -25,7 +25,7 @@ exits application
 ### Application
 - Linux, mySQL, MongoDB, Python
 Dependencies:
-- Python: bs4 (beautiful soup), selenium webdriver, pymongo, mysql python
+- Python: beautiful soup 4, selenium webdriver, pymongo, mysql python, requests, googlemaps
 - Selenium webdriver, set path to driver in command.py
 
 ## Features
