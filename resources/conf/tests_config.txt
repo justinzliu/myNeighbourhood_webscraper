@@ -1,0 +1,36 @@
+#Global values used for configurating tests
+
+#Configuration
+"CONF_PATH", "resources/conf/"
+"CONF_LOC_FILE", "locations.csv"
+
+#Database
+"DB_NAME", "myNeighbourhood"
+"DB_CONFIG", {"user":"test","password":"Test123!","host":"localhost"}
+
+#Statistics Canada Crime
+"CRIME_PATH", "resources/crime_statistics/"
+"CRIME_FILE1", "statscan_provincial.csv"
+"CRIME_FILE2", "statscan_municipal.csv"
+"CRIME_COUNTRY", "Canada"
+"CRIME_PROVINCE", "British Columbia"
+"CRIME_LOCATION1", ["Canada","British Columbia","Vancouver"]
+"CRIME_LOCATION2", ["Burnaby,Surrey","New Westminster","Richmond"]
+"CRIME_DATE", "2019"
+
+#Statistics Canada Census
+"CENSUS_PATH", "resources/census_statistics/"
+"CENSUS_FILE1", "statscan_provincial.csv"
+"CENSUS_FILE2", "statscan_municipal.csv"
+"CENSUS_COUNTRY", "Canada"
+"CENSUS_PROVINCE", "British Columbia"
+"CENSUS_LOCATION1", ["Canada","British Columbia"]
+"CENSUS_LOCATION2", ["Vancouver","Burnaby","Surrey","New Westminster","Richmond"]
+"CENSUS_DATE", "2016"
+
+#Compare School
+"SELENIUM_DRIVER", "/usr/lib/chromium-browser/chromedriver"
+"CS_COUNTRY", "Canada"
+"CS_PROVINCE", "British Columbia"
+"CS_CITY", ["Burnaby"]
+"CS_SCHOOLTYPE", "Secondary"

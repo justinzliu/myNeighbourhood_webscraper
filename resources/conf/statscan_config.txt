@@ -1,0 +1,32 @@
+#relevant country
+"COUNTRY", "Canada"
+"PROVINCE", "British Columbia"
+
+#Crime
+
+#FILE headers of target data
+"CRIME_DATE", "REF_DATE"
+"CRIME_LOCATION", "GEO"
+"CRIME_TYPE", "Violations"
+"CRIME_METRIC", "Statistics"
+"CRIME_VALUE", "VALUE"
+
+#FILE subheaders of target data
+"CRIME_INCIDENTS_KEYWORD", "Actual incidents"
+"CRIME_RATE_KEYWORD", "Rate per 100,000 population"
+"CRIME_CHANGE_KEYWORD", "Percentage change in rate"
+
+#target crime categories
+#all categories are stored in the order of incidents, rate, and % change from previous year
+"CRIME_CATEGORIES", {"Total, all violations":"2","Total violent Criminal Code":"2","Total property crime":"2","Total Criminal Code traffic violations":"2","Total drug violations":"2"}
+
+# Census
+
+#Census FILE headers of target data
+"CENSUS_LOCATION", "GEO_NAME"
+"CENSUS_DATE", "CENSUS_YEAR"
+"CENSUS_TYPE", "DIM: Profile"
+#use \ to escape special characters for regex matching
+"CENSUS_VALUE", "Dim: Sex \(3\): Member ID: \[1\]: Total - Sex"
+"CENSUS_TOTALS", "Total"
+"CENSUS_CATEGORIES", {"Population":"0","Total - Distribution":"3","Total - Visible minority":"14","Average age":"0","Average total income":"0","Average total income of households":"0"}
