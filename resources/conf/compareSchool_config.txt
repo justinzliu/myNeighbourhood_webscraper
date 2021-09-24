@@ -1,0 +1,21 @@
+#Global values used for configurating compareSchool.py
+
+#Configuration
+"SELENIUM_DRIVER", "/usr/lib/chromium-browser/chromedriver"
+"WEBSITE", "https://www.compareschoolrankings.org/"
+"GMAPS_API_KEY", "AIzaSyC0YiNK4ltKqEjgqLmphbAPRAvRePvRefY"
+
+#locate school type, searchbar, input city, click autocomplete option
+"SCHOOLTYPE_XPATH_PREFIX", "//span[@class="school-education-level-tab-value" and contains(text(), "
+"SCHOOLTYPE_XPATH_SUFFIX", ")]"
+"SEARCHBAR_XPATH", "//input[@id="keyword"]"
+"AUTOCOMPLETE_XPATH", "//div[@class="v-menu__content theme--light menuable__content__active v-autocomplete__content"]//span[@class="v-chip__content" and contains(text(),"City")]"
+"TABLEBODY_XPATH", "//div[@id="school-map-view"]//table[@class="v-datatable v-table theme--light"]/tbody"
+
+#container for school results, scroll function used to load all results
+"GET_ELEMENT", "document.getElementsByClassName('school-list-table-card school-list-table-sidebar')[0]"
+
+#locate name, rank, and score fields
+"NAME_CLASS", "school-name label"
+"RANK_CLASS", "flex text-xs-right field xs6"
+"SCORE_CLASS", "flex xs6 text-xs-right field score_color_"

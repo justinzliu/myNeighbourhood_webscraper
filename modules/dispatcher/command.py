@@ -1,8 +1,6 @@
-import pymongo
-
 import modules.webscraper.compareSchool as cs
 import modules.db.msql as msql
-import modules.webscraper.statsCanada_crime as scCrime
+import modules.webscraper.statsCanada as sc
 
 DRIVER_PATH = "/usr/lib/chromium-browser/chromedriver"
 CITY = "Burnaby"
@@ -14,43 +12,28 @@ scCrime_FILE2 = "statscan_crime_bc.csv"
 DATABASE_NAME = "myNeighbourhood"
 DATABASE_PORT = "27017"
 
-#TODO: mongoDB functions, used for Realtor features
-def pymongo_database():
-	client = pymongo.MongoClient("mongodb://localhost:"+DATABASE_PORT+"/")
-	db = client[DATABASE_NAME]
-
-	#DEBUG: confirm db exists
-	dblist = client.list_database_names()
-	if DATABASE_NAME in dblist:
-		print(DATABASE_NAME + " exists")
-
-	#DEBUG: delete db
-	client.drop_database(DATABASE_NAME)
-	dblist = client.list_database_names()
-	if DATABASE_NAME not in dblist:
-		print(DATABASE_NAME + " successfully deleted")
-
-	client.close()
-
 #TODO: REMOVE when production-ready
 #TODO: run all scraping commands together for convenience
 def scrape_cmd():
 	cs_table = "schools"
 	cs_pkeys = ["city","name"]
-	cs_schools = cs.get_schools(DRIVER_PATH,CITY)
+	#cs_schools = cs.get_schools(DRIVER_PATH, COUNTRY, LOCATION, SCHOOLTYPE)
 	msql.insert(cs_table,cs_pkeys,cs_schools)
 	scCrime_table = "crimes"
 	scCrime_pkeys = ["location","violations"]
-	scCrime_crimes = scCrime.get_reports(scCrime_PATH + scCrime_FILE1, LOCATION1)
+	scCrime_crimes = sc.get_reports(scCrime_PATH + scCrime_FILE1, LOCATION1)
 	msql.insert(scCrime_table,scCrime_pkeys,scCrime_crimes)
 	for location in LOCATION2:
-		scCrime_crimes = scCrime.get_reports(scCrime_PATH + scCrime_FILE2, location)
+		scCrime_crimes = sc.get_reports(scCrime_PATH + scCrime_FILE2, location)
 		msql.insert(scCrime_table,scCrime_pkeys,scCrime_crimes)
+
+def scrape(path, country, location):
+	pass
 
 def scrape_dispatch(*args):
 	cases = {
 		"compareschool": cs.get_schools,
-		"statscanada": scCrime.get_reports
+		"statscanada": sc.get_reports
 	}
 	if cases.get(args[0]) == None:
 		print("unknown command")
