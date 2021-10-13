@@ -23,7 +23,9 @@ class Test_compareSchool(unittest.TestCase):
 		cls.schools = {}
 		for city in GLOBALS["CS_CITY"]:
 			location = scrape.Location(1, GLOBALS["CS_COUNTRY"], GLOBALS["CS_PROVINCE"], city)
-			cls.schools[city] = cs.get_schools(location, GLOBALS["CS_SCHOOLTYPE"])
+			cls.schools[city] = cs.get_schools(location)
+			print(cls.schools)
+			print(cls.schools[city])
 
 	def test_validSchools(self):
 		cols = self.schools[list(self.schools)[0]][0].__dict__.keys()

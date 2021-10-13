@@ -26,7 +26,7 @@ class Test_statscanadaCrimes(unittest.TestCase):
 		loc_id = 1
 		for loc in GLOBALS["CRIME_LOCATION1"]:
 			location = scrape.Location(loc_id, GLOBALS["CRIME_COUNTRY"], GLOBALS["CRIME_PROVINCE"], loc)
-			cls.crimes[loc] = statscan.get_crimeReports(GLOBALS["CRIME_PATH"] + GLOBALS["CRIME_FILE1"], location, GLOBALS["CRIME_DATE"])
+			cls.crimes[loc] = statscan.get_crimeReports(GLOBALS["CRIME_PATH"] + GLOBALS["CRIME_FILE1"], location)
 			loc_id += 1
 		#for location in GLOBALS["CRIME_LOCATION2"]:
 		#	cls.crimes[location] = statscan.get_crimeReports(GLOBALS["CRIME_PATH"] + GLOBALS["CRIME_FILE2"], GLOBALS["CRIME_PROVINCE"], location, GLOBALS["CRIME_DATE"])

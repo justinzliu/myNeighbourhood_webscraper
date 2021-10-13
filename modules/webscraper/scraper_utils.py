@@ -2,6 +2,7 @@ import functools
 import time
 import re
 import csv
+from typing import Iterable
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -28,9 +29,12 @@ class Location:
 	@classmethod
 	def init_dict(cls, dictionary):
 		if "loc_id" in dictionary:
-			return cls(dictionary["country"], dictionary["province"], dictionary["city"], dictionary["loc_id"])
+			return cls(dictionary["loc_id"], dictionary["country"], dictionary["province"], dictionary["city"])
 		else:
 			return cls(None, dictionary["country"], dictionary["province"], dictionary["city"])
+
+	def isMatch(self, other):
+		return (self.country == other.country and self.province == other.province and self.city == other.city)
 
 	def addID(self, loc_id):
 		self.loc_id = loc_id
@@ -40,10 +44,14 @@ class Location:
 		return (" ".join((member + ": " + str(getattr(self, member)) + "\n") for member in members))
 	
 	def __lt__(self, other):
-		return (self.country, self.province, self.city) < (other.country, other.province, other.city)
+		#return (self.loc_id) < (other.loc_id)
+		self_loc = self.country + self.province + self.city
+		other_loc = other.country + other.province + other.city
+		return self_loc < other_loc
 	
 	def __eq__(self, other):
-		return (self.country, self.province, self.city) == (other.country, other.province, other.city)
+		#return (self.loc_id == other.loc_id)
+		return (self.country == other.country and self.province == other.province and self.city == other.city)
 
 class Source:
 	def __init__(self, loc_id, type, source, method, arguments):
@@ -72,7 +80,10 @@ class Report:
 	def __init__(self, loc_id, retrieved):
 		self.loc_id = loc_id
 		self.retrieved = retrieved
-	
+
+	def serialize(self):
+		raise NotImplementedError()
+
 	def __repr__(self):
 		members = self.__dict__.keys()
 		return (" ".join((member + ": " + str(getattr(self, member)) + "\n") for member in members))   
@@ -86,6 +97,9 @@ class CrimeReport(Report):
 		self.change = change
 		self.year = year
 
+	def serialize(self):
+		self.loc_id = str(self.loc_id)	
+
 class CensusReport(Report):
 	def __init__(self, loc_id, retrieved, population, ageGroups, demographics, avgAge, avgIncome, avgHouseIncome, year):
 		Report.__init__(self, loc_id, retrieved)
@@ -97,6 +111,13 @@ class CensusReport(Report):
 		self.avgHouseIncome = avgHouseIncome
 		self.year = year
 
+	def serialize(self):
+		self.loc_id = str(self.loc_id)
+		if type(self.ageGroups) is dict:
+			self.ageGroups = serialize_dict(self.ageGroups)
+		if type(self.demographics) is dict:
+			self.demographics = serialize_dict(self.demographics)
+
 class School(Report):
 	def __init__(self, loc_id, retrieved, s_type, name, score, rank, address, coordinate):
 		Report.__init__(self, loc_id, retrieved)
@@ -105,7 +126,12 @@ class School(Report):
 		self.score = score
 		self.rank = rank
 		self.address = address
-		self.coordinate = coordinate   
+		self.coordinate = coordinate
+
+	def serialize(self):
+		self.loc_id = str(self.loc_id)
+		if type(self.coordinate) is tuple:
+			self.coordinate = serialize_tuple(self.coordinate)
 
 def extract_table(table:str) -> list:
 	table_rows = table.find_all("tr")
@@ -137,6 +163,13 @@ def match_key(key:str, lst:list) -> str:
 			matched_key = el
 			break
 	return matched_key
+
+def get_location(target_id:str, locations:list) -> Location:
+	location = None
+	for loc in locations:
+		if loc.loc_id == target_id:
+			location = loc
+	return location
 
 #extract headers and remove newline and string quotes
 def csv_getHeader(file:str, encoding:str="utf-8-sig") -> list:
@@ -181,44 +214,79 @@ def conf_processFile(file:str) -> dict:
 				val = key_val[1].strip("\"\n")
 				#if list pattern found
 				if pat_list.match(val):
-					raw_list = val.strip("[\"]")
-					val = raw_list.split("\",\"")
+					val = unserialize_list(val)
 				#if dictionary pattern found
 				elif pat_dict.match(val):
-					raw_dict = val.strip("{{\"}}")
-					raw_dict = raw_dict.split("\",\"")
-					val = {}
-					for el in raw_dict:
-						key_val = el.split("\":\"")
-						val[key_val[0]] = key_val[1]
+					val = unserialize_dict(val)
 				processed_file[key] = val
 	return processed_file
 
-def serialize_list(lst:list, enclosure:str="") -> str:
-	sList = "[" + ",".join(lst) + "]"
+#serialize list into recognized format in txt and csv config files
+def serialize_list(lst:list, sep:str="\",\"", enclosure:str="") -> str:
+	sList = "[\"" + sep.join(lst) + "\"]"
 	if len(enclosure) == 2:
 		sList = enclosure[0] + sList + enclosure[1]
 	return sList
 
-def serialize_dict(dictionary:dict, enclosure:str="") -> str:
-	sDict = "{" + ",".join("{}={}".format(*item) for item in dictionary.items()) + "}"
+#serialize dictionary into recognized format in txt and csv config files
+def serialize_dict(dictionary:dict, sep:str="\",\"", enclosure:str="") -> str:
+	sDict = "{\"" + sep.join("{}\":\"{}".format(*item) for item in dictionary.items()) + "\"}"
 	if len(enclosure) == 2:
 		sDict = enclosure[0] + sDict + enclosure[1]
 	return sDict
 
-def unserialize_list(sList:str) -> list:
-	raw_list = sList.strip("[]")
-	lst = raw_list.split(",")
+#serialize tuples into recognized format in txt and csv config files
+def serialize_tuple(tup:tuple, sep:str="\",\"", enclosure:str="") -> str:
+	sTuple = "(\"" + sep.join(tup) + "\")"
+	if len(enclosure) == 2:
+		sTuple = enclosure[0] + sTuple + enclosure[1]
+	return sTuple
+
+#unserialize recognized format in text and csv config files into list
+def unserialize_list(sList:str, sep:str="\",\"", vars:dict={}) -> list:
+	raw_list = sList.strip("[\"]")
+	lst = raw_list.split(sep)
+	pattern = re.compile("f.") #tag for string values to be used as variable names
+	if vars:
+		for index, val in enumerate(lst):
+			if pattern.match(val):
+				lst[index] = vars[val[2:]]
 	return lst
 
-def unserialize_dict(sDict:str) -> dict:
+#unserialize recognized format in text and csv config files into dictionary
+def unserialize_dict(sDict:str, sep:str="\",\"") -> dict:
 	dictionary = {}
-	raw_dict = sDict.strip("{{}}")
-	raw_dict = raw_dict.split(",")
+	raw_dict = sDict.strip("{{\"}}")
+	raw_dict = raw_dict.split(sep)
 	for el in raw_dict:
-		key_val = el.split(":")
+		key_val = el.split("\":\"")
 		dictionary[key_val[0]] = key_val[1]
 	return dictionary
+
+#unserialize recognized format for tuples, tuple values are converted to strings
+def unserialize_tuple(sTuple:str, sep:str="\",\"") -> tuple:
+	raw_tup = sTuple.strip("(\")")
+	raw_tup = raw_tup.split(sep)
+	return tuple(i for i in raw_tup)
+
+def unserialize_value(element:str, sep:str="\",\"") -> Iterable:
+	pat_list = re.compile('\[.*\]$') #pattern to find serialized lists of the form [val1&...&valn]
+	pat_dict = re.compile('\{.*\}$') #pattern to find serialized dictionaries of the form {key1:val1&...&keyn:valn}
+	pat_tup = re.compile('(.*)$') #pattern to find serialized tuples of the form {key1:val1&...&keyn:valn}
+	uelement = []
+	pass
+
+#DEPRECIATED
+#elements in list may be tagged to be used as local variables names rather than string values and will be formatted to correct values given a local variable map
+def unserializedList_format(lst:list, local_vars:dict) -> list:
+	fList = []
+	pattern = re.compile("f.")
+	for el in lst:
+		if pattern.match(el):
+			fList.append(local_vars[el[2:]])
+		else:
+			fList.append(el)
+	return fList
 
 def scroll_down_element(driver:str, element:str, getElement:str) -> None:
 	#getElement is the javascript HTML get command to return an element. if the script returns a list, be sure to include the index
