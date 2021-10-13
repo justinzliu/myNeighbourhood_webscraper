@@ -10,8 +10,8 @@
 
 #Statistics Canada Crime
 "CRIME_PATH", "resources/crime_statistics/"
-"CRIME_FILE1", "statscan_provincial.csv"
-"CRIME_FILE2", "statscan_municipal.csv"
+"CRIME_FILE1", "statscan_1.csv"
+"CRIME_FILE2", "statscan_2.csv"
 "CRIME_COUNTRY", "Canada"
 "CRIME_PROVINCE", "British Columbia"
 "CRIME_LOCATION1", ["Canada","British Columbia","Vancouver"]
@@ -20,8 +20,8 @@
 
 #Statistics Canada Census
 "CENSUS_PATH", "resources/census_statistics/"
-"CENSUS_FILE1", "statscan_provincial.csv"
-"CENSUS_FILE2", "statscan_municipal.csv"
+"CENSUS_FILE1", "statscan_1.csv"
+"CENSUS_FILE2", "statscan_2.csv"
 "CENSUS_COUNTRY", "Canada"
 "CENSUS_PROVINCE", "British Columbia"
 "CENSUS_LOCATION1", ["Canada","British Columbia"]
@@ -33,4 +33,3 @@
 "CS_COUNTRY", "Canada"
 "CS_PROVINCE", "British Columbia"
 "CS_CITY", ["Burnaby"]
-"CS_SCHOOLTYPE", "Secondary"

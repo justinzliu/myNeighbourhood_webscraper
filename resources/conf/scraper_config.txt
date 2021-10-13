@@ -1,6 +1,3 @@
-#relevant country
-"COUNTRY", "Canada"
-
 #Crime
 
 #FILE headers of target data
@@ -15,9 +12,9 @@
 "CRIME_RATE_KEYWORD", "Rate per 100,000 population"
 "CRIME_CHANGE_KEYWORD", "Percentage change in rate"
 
-#target crime categories: all categories are stored in the order of incidents, rate, and % change from previous year
+#target crime categories
+#all categories are stored in the order of incidents, rate, and % change from previous year
 "CRIME_CATEGORIES", {"Total, all violations":"2","Total violent Criminal Code":"2","Total property crime":"2","Total Criminal Code traffic violations":"2","Total drug violations":"2"}
-"CRIME_LATEST_YEAR", "2020"
 
 # Census
 
@@ -29,4 +26,3 @@
 "CENSUS_VALUE", "Dim: Sex \(3\): Member ID: \[1\]: Total - Sex"
 "CENSUS_TOTALS", "Total"
 "CENSUS_CATEGORIES", {"Population":"0","Total - Distribution":"3","Total - Visible minority":"14","Average age":"0","Average total income":"0","Average total income of households":"0"}
-"CENSUS_LATEST_YEAR", "2016"

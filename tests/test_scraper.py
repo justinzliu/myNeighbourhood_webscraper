@@ -29,14 +29,14 @@ class Test_command(unittest.TestCase):
 
 	#@unittest.skip("testing small file")
 	def test_scrapeRun(self):
-		scraper.scrape_all()
-		#print(msql.select_format("schools", scrape.School))
-		self.assertTrue(1 == 1)
+		errors = 0
+		scraper.scrape_all_test()
+		self.assertTrue(errors == 0)
 
 	@classmethod
 	def tearDownClass(cls):
-		msql.reset()
-		#pass
+		#msql.reset()
+		pass
 		
 if __name__ == '__main__':
 	unittest.main()

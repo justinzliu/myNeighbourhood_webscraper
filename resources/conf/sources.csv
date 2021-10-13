@@ -1,10 +1,20 @@
 "country","province","city","type","source","method","arguments"
-"Canada","British Columbia","Burnaby","crime","statsCanada","get_crimeReports","CRIME_FILE_PROVINCIAL"
-"Canada","British Columbia","Burnaby","census","statsCanada","get_censusReports","CENSUS_FILE_PROVINCIAL"
-"Canada","British Columbia","Burnaby","school","compareSchool","get_schools","SELENIUM_DRIVER"
-"Canada","British Columbia","Richmond","crime","statsCanada","get_crimeReports","CRIME_FILE_PROVINCIAL"
-"Canada","British Columbia","Richmond","census","statsCanada","get_censusReports","CENSUS_FILE_PROVINCIAL"
-"Canada","British Columbia","Richmond","school","compareSchool","get_schools","SELENIUM_DRIVER"
-"Canada","British Columbia","Surrey","crime","statsCanada","get_crimeReports","CRIME_FILE_PROVINCIAL"
-"Canada","British Columbia","Surrey","census","statsCanada","get_censusReports","CENSUS_FILE_PROVINCIAL"
-"Canada","British Columbia","Surrey","school","compareSchool","get_schools","SELENIUM_DRIVER"
+"Canada","British Columbia","Burnaby","crimes","statsCanada","get_crimeReports",["resources/crime_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","Burnaby","census","statsCanada","get_censusReports",["resources/census_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","Burnaby","schools","compareSchool","get_schools",["f.location"]
+"Canada","British Columbia","British Columbia","crimes","statsCanada","get_crimeReports",["resources/crime_statistics/statscan_1.csv"&"f.location"]
+"Canada","British Columbia","British Columbia","census","statsCanada","get_censusReports",["resources/census_statistics/statscan_1.csv"&"f.location"]
+"Canada","British Columbia","New Westminster","crimes","statsCanada","get_crimeReports",["resources/crime_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","New Westminster","census","statsCanada","get_censusReports",["resources/census_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","New Westminster","schools","compareSchool","get_schools",["f.location"]
+"Canada","British Columbia","Richmond","crimes","statsCanada","get_crimeReports",["resources/crime_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","Richmond","census","statsCanada","get_censusReports",["resources/census_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","Richmond","schools","compareSchool","get_schools",["f.location"]
+"Canada","British Columbia","Surrey","crimes","statsCanada","get_crimeReports",["resources/crime_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","Surrey","census","statsCanada","get_censusReports",["resources/census_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","Surrey","schools","compareSchool","get_schools",["f.location"]
+"Canada","British Columbia","Vancouver","crimes","statsCanada","get_crimeReports",["resources/crime_statistics/statscan_1.csv"&"f.location"]
+"Canada","British Columbia","Vancouver","census","statsCanada","get_censusReports",["resources/census_statistics/statscan_2.csv"&"f.location"]
+"Canada","British Columbia","Vancouver","schools","compareSchool","get_schools",["f.location"]
+"Canada","Canada","Canada","crimes","statsCanada","get_crimeReports",["resources/crime_statistics/statscan_1.csv"&"f.location"]
+"Canada","Canada","Canada","census","statsCanada","get_censusReports",["resources/census_statistics/statscan_1.csv"&"f.location"]

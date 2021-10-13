@@ -2,7 +2,6 @@ import time
 import csv
 from datetime import date as date
 import re
-import json
 
 import requests as req
 from bs4 import BeautifulSoup
@@ -50,8 +49,8 @@ def compile_census(report):
     del demographics_dict[scrape.get_key(GLOBALS["CENSUS_TOTALS"], demographics_dict.keys())] #remove Total count
     del demographics_dict[scrape.get_key(GLOBALS["CENSUS_TOTALS"], demographics_dict.keys())] #remove Total visible minority count
     #serialize dictionary to JSON
-    ageGroups = json.dumps(ageGroups_dict)
-    demographics = json.dumps(demographics_dict)
+    ageGroups = ageGroups_dict
+    demographics = demographics_dict
     avgAge = report[keys[3]]
     avgIncome = report[keys[4]]
     avgHouseIncome = report[keys[5]]
@@ -96,16 +95,15 @@ def process_data(file, location, date, categories, location_head, date_head, typ
                         reports[key] = {row[metric_key]:row[value_key]}
     return reports
 
-def get_crimeReports(file, location, cr_date):
+def get_crimeReports(file, location, cr_date=GLOBALS["CRIME_LATEST_YEAR"]):
     reports = process_data(file, location, cr_date, GLOBALS["CRIME_CATEGORIES"], GLOBALS["CRIME_LOCATION"], GLOBALS["CRIME_DATE"], GLOBALS["CRIME_TYPE"], GLOBALS["CRIME_METRIC"], GLOBALS["CRIME_VALUE"])
     compiled_reports = compile_crimes(GLOBALS["CRIME_CATEGORIES"], reports)
     return compiled_reports
 
-def get_censusReports(file, location, cr_date):
+def get_censusReports(file, location, cr_date=GLOBALS["CENSUS_LATEST_YEAR"]):
     report = process_data(file, location, cr_date, GLOBALS["CENSUS_CATEGORIES"], GLOBALS["CENSUS_LOCATION"], GLOBALS["CENSUS_DATE"], GLOBALS["CENSUS_TYPE"], GLOBALS["CENSUS_TYPE"], GLOBALS["CENSUS_VALUE"])
     census_report = compile_census(report)
-    return census_report
-
+    return [census_report]
 
 
 ###########################

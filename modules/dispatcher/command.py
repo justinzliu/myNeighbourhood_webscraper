@@ -1,6 +1,7 @@
 import modules.webscraper.compareSchool as cs
 import modules.db.msql as msql
 import modules.webscraper.statsCanada as sc
+import modules.webscraper.scraper as scraper
 
 DRIVER_PATH = "/usr/lib/chromium-browser/chromedriver"
 CITY = "Burnaby"
@@ -12,33 +13,15 @@ scCrime_FILE2 = "statscan_crime_bc.csv"
 DATABASE_NAME = "myNeighbourhood"
 DATABASE_PORT = "27017"
 
-#TODO: REMOVE when production-ready
-#TODO: run all scraping commands together for convenience
-def scrape_cmd():
-	cs_table = "schools"
-	cs_pkeys = ["city","name"]
-	#cs_schools = cs.get_schools(DRIVER_PATH, COUNTRY, LOCATION, SCHOOLTYPE)
-	msql.insert(cs_table,cs_pkeys,cs_schools)
-	scCrime_table = "crimes"
-	scCrime_pkeys = ["location","violations"]
-	scCrime_crimes = sc.get_reports(scCrime_PATH + scCrime_FILE1, LOCATION1)
-	msql.insert(scCrime_table,scCrime_pkeys,scCrime_crimes)
-	for location in LOCATION2:
-		scCrime_crimes = sc.get_reports(scCrime_PATH + scCrime_FILE2, location)
-		msql.insert(scCrime_table,scCrime_pkeys,scCrime_crimes)
-
-def scrape(path, country, location):
-	pass
-
 def scrape_dispatch(*args):
 	cases = {
-		"compareschool": cs.get_schools,
-		"statscanada": sc.get_reports
+		"all": scraper.scrape_all(),
 	}
 	if cases.get(args[0]) == None:
 		print("unknown command")
 	else:
-		cases[args[0]](*args[1:])
+		#cases[args[0]](*args[1:])
+		cases[args[0]]
 
 def msql_dispatch(*args):
 	cases = {
@@ -65,7 +48,7 @@ def msql_dispatch(*args):
 def cmd_dispatch(cmd,args):
 	live = 1
 	cases = {
-		"scrape": scrape_cmd,
+		"scrape": scrape_dispatch,
 		"db_msql": msql_dispatch
 	}
 	try:

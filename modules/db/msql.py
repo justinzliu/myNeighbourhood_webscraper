@@ -65,8 +65,8 @@ TABLES["census"] = (
     "CREATE TABLE census ("
 	"  `loc_id` int NOT NULL,"
     "  `population` VARCHAR(50) NOT NULL,"
-    "  `ageGroups` VARCHAR(100),"
-    "  `demographics` VARCHAR(50),"
+    "  `ageGroups` VARCHAR(255),"
+    "  `demographics` VARCHAR(510),"
     "  `avgAge` VARCHAR(50),"
     "  `avgIncome` VARCHAR(50),"
     "  `avgHouseIncome` VARCHAR(50),"
@@ -142,6 +142,7 @@ def update_sources(locations, db_config):
 				if location == target_loc:
 					source = scrape.Source.init_dict(location.loc_id, row)
 					sources.append(source)
+	#print(sources)
 	insert("sources", sources, db_config)
 
 #class_init is a class init function

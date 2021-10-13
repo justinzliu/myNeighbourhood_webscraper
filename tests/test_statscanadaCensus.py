@@ -26,11 +26,11 @@ class Test_statscanadaCensus(unittest.TestCase):
 		loc_id = 1
 		for loc in GLOBALS["CENSUS_LOCATION1"]:
 			location = scrape.Location(loc_id, GLOBALS["CRIME_COUNTRY"], GLOBALS["CRIME_PROVINCE"], loc)
-			cls.census[loc] = sc.get_censusReports(GLOBALS["CENSUS_PATH"] + GLOBALS["CENSUS_FILE1"], location, GLOBALS["CENSUS_DATE"])
+			cls.census[loc] = sc.get_censusReports(GLOBALS["CENSUS_PATH"] + GLOBALS["CENSUS_FILE1"], location, GLOBALS["CENSUS_DATE"])[0]
 			loc_id += 1
 		for loc in GLOBALS["CENSUS_LOCATION2"]:
 			location = scrape.Location(loc_id, GLOBALS["CRIME_COUNTRY"], GLOBALS["CRIME_PROVINCE"], loc)
-			cls.census[loc] = sc.get_censusReports(GLOBALS["CENSUS_PATH"] + GLOBALS["CENSUS_FILE2"], location, GLOBALS["CENSUS_DATE"])
+			cls.census[loc] = sc.get_censusReports(GLOBALS["CENSUS_PATH"] + GLOBALS["CENSUS_FILE2"], location, GLOBALS["CENSUS_DATE"])[0]
 			loc_id += 1
 
 	def test_validLocations(self):
@@ -41,6 +41,7 @@ class Test_statscanadaCensus(unittest.TestCase):
 		errors = 0
 		#check for any empty fields in CensusReport instance
 		for location in self.census:
+			self.census[location].serialize()
 			report = self.census[location]
 			print(report)
 			for col in cols:
